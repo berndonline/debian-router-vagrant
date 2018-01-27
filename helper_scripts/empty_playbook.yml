@@ -1,0 +1,17 @@
+---
+
+- hosts: debian-router
+  connection: local
+  user: vagrant
+  gather_facts: 'no'
+  tasks:
+
+- hosts: cisco-iosxe
+  connection: local
+  user: vagrant
+  gather_facts: 'no'
+  tasks:
+    - name: deploy cisco iosxe configuration
+      ios_config:
+        src: "config_cisco-iosxe.j2"
+        save_when: 'modified'

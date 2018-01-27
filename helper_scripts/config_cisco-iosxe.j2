@@ -1,0 +1,37 @@
+hostname cisco-iosxe
+
+crypto keyring my-keyring  
+  pre-shared-key address 10.0.0.1 key secret
+
+crypto isakmp policy 20
+ encr aes 256
+ authentication pre-share
+ group 5
+crypto isakmp identity hostname
+crypto isakmp profile my-isakmp-profile
+   keyring my-keyring
+   match identity host debian-router.domain.com
+
+crypto ipsec transform-set my-transform-set esp-aes esp-sha-hmac
+ mode transport
+
+crypto ipsec profile my-ipsec-profile
+ set transform-set my-transform-set
+ set pfs group5
+ set isakmp-profile my-isakmp-profile
+
+interface Loopback1
+ ip address 10.255.0.2 255.255.255.255
+
+interface Tunnel0
+ ip address 192.168.0.2 255.255.255.0
+ tunnel source GigabitEthernet2
+ tunnel destination 10.0.0.1
+ tunnel protection ipsec profile my-ipsec-profile
+ no shutdown
+
+interface GigabitEthernet2
+ ip address 10.0.0.2 255.255.255.0
+ no shutdown
+
+ip route 10.255.0.1 255.255.255.255 192.168.0.1

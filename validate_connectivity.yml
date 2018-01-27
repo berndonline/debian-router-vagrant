@@ -1,0 +1,11 @@
+---
+
+
+- hosts: cisco-iosxe
+  connection: local
+  user: vagrant
+  gather_facts: 'no'
+  tasks:
+    - name: check connectivity from cisco iosxe host
+      ios_ping:
+        dest: '10.255.0.1'
