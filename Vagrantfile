@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
   #Generating Ansible Host File at following location:
   #    ./.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory
   config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "./helper_scripts/empty_playbook.yml"
+    ansible.playbook = "./helper_scripts/playbook.yml"
   end
 
   ##### DEFINE VM for rtr-1 #####

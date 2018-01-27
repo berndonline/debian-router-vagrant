@@ -1,0 +1,28 @@
+---
+
+- hosts: debian-router
+  user: vagrant
+  gather_facts: 'no'
+  become: 'True'
+  tasks:
+    - name: enable forwarding
+      lineinfile:
+        path: /etc/sysctl.conf
+        regexp: '^#net.ipv4.ip_forward=1'
+        line: 'net.ipv4.ip_forward=1'
+      register: result
+    - shell: sysctl -p /etc/sysctl.conf
+      when: result.changed
+
+    - name: install software and deploy configuration
+      script: 'config_debian-router.sh'
+
+- hosts: cisco-iosxe
+  connection: local
+  user: vagrant
+  gather_facts: 'no'
+  tasks:
+    - name: deploy cisco iosxe configuration
+      ios_config:
+        src: "config_cisco-iosxe.j2"
+        save_when: 'modified'
