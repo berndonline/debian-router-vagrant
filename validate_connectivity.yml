@@ -1,11 +1,18 @@
 ---
 
+- hosts: debian-router
+  user: vagrant
+  gather_facts: 'no'
+  become: 'True'
+  tasks:
+    - name: check connectivity from debian router 
+      shell: 'ping -c 4 10.255.0.2'
 
 - hosts: cisco-iosxe
   connection: local
   user: vagrant
   gather_facts: 'no'
   tasks:
-    - name: check connectivity from cisco iosxe host
+    - name: check connectivity from cisco iosxe
       ios_ping:
         dest: '10.255.0.1'
