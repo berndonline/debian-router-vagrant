@@ -20,6 +20,26 @@ ldpd=no
 nhrpd=no
 EOF'
 
+sudo bash -c 'cat << EOF > /etc/frr/frr.conf
+!
+frr version 3.0.3
+frr defaults traditional
+no ipv6 forwarding
+!
+router bgp 65001
+ neighbor 192.168.0.2 remote-as 65002
+ !
+ address-family ipv4 unicast
+  network 10.255.0.1/32
+ exit-address-family
+ vnc defaults
+  response-lifetime 3600
+  exit-vnc
+!
+line vty
+!
+EOF'
+
 sudo systemctl enable frr
 sudo systemctl start frr
 
@@ -74,7 +94,6 @@ iface gre1 inet tunnel
       netmask 255.255.255.0
       mode gre
       endpoint 10.0.0.2
-      up ip route add 10.255.0.2/32 via 192.168.0.2
 EOF'
 
 sudo systemctl restart networking
