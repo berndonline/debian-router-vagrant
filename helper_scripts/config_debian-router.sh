@@ -43,6 +43,25 @@ EOF'
 sudo systemctl enable frr
 sudo systemctl start frr
 
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -q iptables-persistent
+
+sudo bash -c 'cat << EOF > /etc/iptables/rules.v4
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+COMMIT
+*mangle
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+-A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+COMMIT
+EOF'
+
+
 sudo apt-get install -y strongswan-swanctl charon-systemd
 
 sudo bash -c 'cat << EOF > /etc/strongswan.d/charon/connmark.conf
